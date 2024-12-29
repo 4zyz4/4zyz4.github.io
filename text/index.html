@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<title>字数统计 - 在线字数计算器</title>
+<script type="text/javascript">
+// <![CDATA[
+function bookmark(){
+var title=document.title
+var url=document.location.href
+if (window.sidebar) window.sidebar.addPanel(title, url,"");
+else if( window.opera && window.print ){
+var mbm = document.createElement('a');
+mbm.setAttribute('rel','sidebar');
+mbm.setAttribute('href',url);
+mbm.setAttribute('title',title);
+mbm.click();}
+else if( document.all ) window.external.AddFavorite( url, title);
+}
+// ]]>
+</script>
+<style type="text/css">
+<!--
+body{margin:0;}
+td{font-size:9pt;line-height:19px;}
+h1{font-weight:700;font-size:16px;text-align:center; margin:30px auto 20px}
+.content{font-size:14px;}
+A:visited{font-size:9pt;color:#333;text-decoration:none;}
+A:link{font-size:9pt;text-decoration:none;}
+A:hover{font-size:9pt;color:#0E5EE2;text-decoration:underline;}
+A:active{font-size:9pt;color:#00C;text-decoration:none;}
+.white{color:#FFF;}
+a.d:hover{font-size:13px;color:#CFF1FA;text-decoration:underline;font-weight:700;}
+a.d:link{font-size:13px;color:#FFF;text-decoration:none;font-weight:700;}
+a.d:visited{font-size:13px;color:#CFF1FA;font-weight:700;}
+a.c:link{color:#666;text-decoration:underline;}
+a.c:visited{color:#666;text-decoration:none;}
+a.c:hover{font-weight:700;color:#666;text-decoration:underline;}
+a.b:hover{font-size:10pt;color:#36F;text-decoration:none;}
+a.e:hover{font-size:12px;color:#CFF1FA;text-decoration:underline;font-weight:700;}
+a.e:link{font-size:12px;color:#FFF;text-decoration:none;font-weight:700;}
+a.e:visited{font-size:12px;color:#CFF1FA;font-weight:700;}
+.hongzi{color:red;}
+a.f:hover{font-size:13px;border:solid 1px #69F;background-color:#FBFDFF;height:18px;width:26px;font-weight:700;color:#00F;}
+.pageNumlink{font-size:13px;border:solid 1px #69F;background-color:#39F;height:18px;width:26px;color:#FFF;font-weight:700;}
+TEXTAREA,SELECT{font-size:9pt;color:#000;font-family:Verdana, Arial, Helvetica, sans-serif, 宋体;background-color:#fff;border-color:silver;border-width:1px;}
+a.b:link,a.b:visited{font-size:10pt;color:#0321C9;text-decoration:underline;}
+a.f:link,a.f:visited{font-size:13px;border:solid 1px #69F;background-color:#FBFDFF;height:18px;width:26px;color:#00F;}
+.num{ font-size:14px; font-weight:700; color:#F00}
+-->
+</style>
+
+<style>
+#clip_copy,#web-copy-btn-wk{
+   background:#54aae9 !important
+}
+</style>
+</head>
+<body inject_svd="true">
+<h1>字数统计 - 在线字数计算器</h1>
+<table cellspacing="1" cellpadding="5" width="940" align="center" bgcolor="#ffffff" border="0">
+
+      <tbody><tr>
+        <td bgcolor="#e5f0fb" colspan="2"><div align="center">一种方便计算字数，以控制文字数量的小工具。</div></td>
+      </tr>
+      <tr>
+        <td bgcolor="#e5f0fb"><label>文章输入区</label></td>
+        <td bgcolor="#e5f0fb"><textarea id="content" name="content" rows="20" cols="120"></textarea></td>
+      </tr>
+      <tr>
+        <td bgcolor="#e5f0fb">字数统计</td>
+        <td style="LINE-HEIGHT: 200%" bgcolor="#e5f0fb"><p>中文：<span id="zhongwen" class="num">０</span>          　英文：<span id="yingwen" class="num">０</span> 
+          　数字：<span id="shuzi" class="num">０ 　　</span>　　中文+标点：<span id="zbiaodian" class="num">０</span> 　中文+数字：<span id="zishu" class="num">０</span></p>
+          <p><strong>字符总数：共记<span id="numwords" class="num">０</span>个字符 (汉字算两个字符，数字、空格、英文字母算做一个字符) </strong></p></td>
+      </tr>
+</tbody></table>
+<script language="javascript">
+		function $(id){return document.getElementById(id);}
+		var EventUtil = function(){};
+EventUtil.addEventHandler = function(obj,EventType,Handler)
+{
+//如果是FF
+if(obj.addEventListener)
+{
+   obj.addEventListener(EventType,Handler,false);
+} 
+//如果是IE
+else if(obj.attachEvent)
+{
+   obj.attachEvent('on'+EventType,Handler);
+} 
+else
+{
+   obj['on'+EventType] = Handler;
+}
+}
+
+//alert($("chaptercontent").value);
+if($("content")){
+EventUtil.addEventHandler($('content'),'propertychange',CountChineseCharacters);
+EventUtil.addEventHandler($('content'),'input',CountChineseCharacters);
+//EventUtil.addEventHandler($('chaptercontent'),'keydown',CountChineseCharacters('chaptercontent'));
+}
+function showit(Word){
+alert(Word);
+}
+function CountChineseCharacters() {
+Words=$('content').value;
+	var W = new Object();
+	var Result = new Array();
+	var iNumwords = 0;
+	var sNumwords = 0;
+	var sTotal = 0;//双字节字符;
+	var iTotal = 0;//中文字符；
+	var eTotal = 0;//Ｅ文字符
+	var otherTotal = 0;
+	var bTotal = 0;
+	var inum = 0;
+	
+	for (i=0; i<Words.length; i++) {
+		var c = Words.charAt(i);
+		if (c.match(/[\u4e00-\u9fa5]/)) {
+			if (isNaN(W[c])) {
+				iNumwords++;
+				W[c] = 1;
+			}
+			iTotal++;
+		}
+
+	}
+	
+
+	for (i=0; i<Words.length; i++) {
+		var c = Words.charAt(i);
+		if (c.match(/[^\x00-\xff]/)) {
+			if (isNaN(W[c])) {
+				sNumwords++;
+
+			}
+			sTotal++;
+		}
+		else
+		{
+		eTotal++;
+		}
+		if (c.match(/[0-9]/)) {
+			inum++;
+		}
+
+	}
+
+//alert(iTotal);
+$('zhongwen').innerText=iTotal;
+$('zishu').innerText=inum+iTotal;
+$('zbiaodian').innerText=sTotal;
+$('yingwen').innerText=eTotal;
+$('shuzi').innerText=inum;
+document.getElementById("numwords").innerHTML=iTotal*2+(sTotal-iTotal)*2+eTotal;
+}
+</script>
